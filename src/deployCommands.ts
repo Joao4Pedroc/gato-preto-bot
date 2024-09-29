@@ -7,6 +7,9 @@ const commands = [
   new SlashCommandBuilder()
     .setName("meow")
     .setDescription("O bot entra na call e faz meow"),
+  new SlashCommandBuilder()
+    .setName("random-gato-preto")
+    .setDescription("O bot manda uma imagem aleatoria do gato preto"),
 ].map((command) => command.toJSON());
 
 const rest = new REST({ version: "10" }).setToken(

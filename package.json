@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node index.ts",
-    "deploy": "ts-node deploy-commands.ts"
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn src/index.ts",
+    "start": "node dist/index.js",
+    "deploy": "ts-node src/deployCommands.ts"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +18,11 @@
     "discord.js": "^14.16.2",
     "dotenv": "^16.4.5",
     "libsodium-wrappers": "^0.7.15",
-    "ts-node": "^10.9.2",
+    "node-fetch": "^3.3.2",
     "typescript": "^5.6.2"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0"
   }
 }
