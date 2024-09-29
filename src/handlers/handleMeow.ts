@@ -8,11 +8,14 @@ import {
   VoiceConnection,
 } from "@discordjs/voice";
 import path from "path";
+import fs from "fs";
 
 let meowIntervals: { [guildId: string]: NodeJS.Timeout } = {};
+let isFirstMeow: { [guildId: string]: boolean } = {};
 
 export async function handleMeow(interaction: ChatInputCommandInteraction) {
-  const voiceChannel = (interaction.member as any).voice.channel;
+  const voiceChannel = (interaction.member as any).voice
+    .channel as VoiceChannel;
   if (!voiceChannel) {
     return interaction.reply(
       "Você precisa estar em um canal de voz para usar este comando!"
@@ -62,10 +65,63 @@ function startMeowing(
   // Se já existe um intervalo para este servidor, não cria outro
   if (meowIntervals[guildId]) return;
 
+  // Marca que é o primeiro miado
+  isFirstMeow[guildId] = true;
+
   const playMeow = () => {
-    const resource = createAudioResource(
-      path.join(process.cwd(), "public", "sound", "meow.mp3")
-    );
+    let audioFilePath: string;
+
+    if (isFirstMeow[guildId]) {
+      // Toca o meow-1.mp3 no primeiro miado
+      audioFilePath = path.join(process.cwd(), "public", "sound", "meow-1.mp3");
+      isFirstMeow[guildId] = false; // Atualiza para indicar que o primeiro miado já ocorreu
+    } else {
+      // Toca um miado aleatório nos subsequentes
+      const soundDir = path.join(process.cwd(), "public", "sound");
+      const files = fs.readdirSync(soundDir);
+
+      // Filtrar apenas arquivos de áudio relevantes
+      const meowFiles = files.filter((file) => {
+        const ext = path.extname(file).toLowerCase();
+        return (
+          [".mp3", ".wav", ".ogg"].includes(ext) && file.startsWith("meow-")
+        );
+      });
+
+      if (meowFiles.length === 0) {
+        console.error(
+          "Nenhum arquivo de miado encontrado na pasta public/sound."
+        );
+        return;
+      }
+
+      // Remover 'meow-1.mp3' da lista
+      const filteredMeowFiles = meowFiles.filter(
+        (file) => file !== "meow-1.mp3"
+      );
+
+      if (filteredMeowFiles.length === 0) {
+        console.error(
+          "Nenhum arquivo de miado adicional encontrado para tocar aleatoriamente."
+        );
+        return;
+      }
+
+      // Escolher um arquivo aleatório
+      const randomIndex = Math.floor(Math.random() * filteredMeowFiles.length);
+      const randomMeow = filteredMeowFiles[randomIndex];
+
+      audioFilePath = path.join(soundDir, randomMeow);
+    }
+
+    // Cria o recurso de áudio com controle de volume habilitado
+    const resource = createAudioResource(audioFilePath, {
+      inlineVolume: true,
+    });
+
+    // Tocar a 50% do volume
+    resource.volume?.setVolume(0.5);
+
     player.play(resource);
 
     // Definir o próximo intervalo entre 1 e 5 minutos
@@ -92,8 +148,9 @@ function monitorVoiceChannel(
       clearInterval(checkInterval);
       clearTimeout(meowIntervals[guildId]);
       delete meowIntervals[guildId];
+      delete isFirstMeow[guildId];
       connection.destroy();
       console.log(`Bot saiu do canal de voz no servidor ${guildId}`);
     }
-  }, 100000); // Verifica a cada 5 segundos
+  }, 10000); // Verifica a cada 5 segundos
 }
