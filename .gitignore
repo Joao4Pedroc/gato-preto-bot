@@ -1,4 +1,5 @@
 .env
 node_modules
 dist/
-/public
+/public/sound
+/public/image
