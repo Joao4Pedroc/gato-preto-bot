@@ -26,7 +26,7 @@ export function handleMessage(message: Message) {
   messageCounts[guildId]++;
 
   // Limite de mensagens antes do bot enviar uma resposta
-  const MESSAGE_THRESHOLD = 10;
+  const MESSAGE_THRESHOLD = 100;
 
   console.log(
     `Servidor: ${guildId}, Contagem de mensagens: ${messageCounts[guildId]}`

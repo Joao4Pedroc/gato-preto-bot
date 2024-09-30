@@ -3,3 +3,4 @@ node_modules
 dist/
 /public/sound
 /public/image
+/backend/messageCounts.json
