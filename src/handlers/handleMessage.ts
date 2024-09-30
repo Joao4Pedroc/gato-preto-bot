@@ -1,40 +1,89 @@
 import { Message, TextChannel } from "discord.js";
+import fs from "fs";
 
-// TODO: uma forma mais efetiva de contar mensagens
+// Caminho do arquivo JSON
+const messageCountsPath = "./backend/messageCounts.json";
 
-const MESSAGE_THRESHOLD = 100; // numero de mensagens ate o gato preto interagir
-const messageCount: { [guildId: string]: number } = {};
+// Objeto para manter as contagens de mensagens
+let messageCounts: { [guildId: string]: number } = {};
 
-const messages = ["Miaaau😺", "Miaaaw😺", "😺😺😺"];
+// Carregar contagens de mensagens na inicialização
+loadMessageCounts();
 
-export async function handleMessage(message: Message) {
-  if (message.author.bot) return;
+// Função para lidar com mensagens
+export function handleMessage(message: Message) {
+  // Ignorar mensagens de bots e mensagens fora de servidores (DMs)
+  if (message.author.bot || !message.guild) return;
 
-  const guildId = message.guild?.id;
-  if (!guildId) return;
+  const guildId = message.guild.id;
 
-  if (!messageCount[guildId]) {
-    messageCount[guildId] = 0;
+  // Inicializar contagem se não existir
+  if (!messageCounts[guildId]) {
+    messageCounts[guildId] = 0;
   }
 
-  messageCount[guildId]++;
+  // Incrementar a contagem de mensagens
+  messageCounts[guildId]++;
 
-  // verificar se o limite de mensagens foi atingido
-  if (messageCount[guildId] >= MESSAGE_THRESHOLD) {
-    // Verificar se o canal é um canal de texto ou um canal de notícias
+  // Limite de mensagens antes do bot enviar uma resposta
+  const MESSAGE_THRESHOLD = 10;
+
+  console.log(
+    `Servidor: ${guildId}, Contagem de mensagens: ${messageCounts[guildId]}`
+  );
+
+  // Verificar se atingiu o limite de mensagens
+  if (messageCounts[guildId] >= MESSAGE_THRESHOLD) {
     if (message.channel instanceof TextChannel) {
       // enviar uma mensagem aleatoria no mesmo canal da ultima mensagem
       const randomMessage = getRandomMessage();
       message.channel.send(randomMessage);
     }
-  }
+    // Resetar a contagem
+    messageCounts[guildId] = 0;
 
-  // Resetar o contador de mensagens do servidor
-  messageCount[guildId] = 0;
+    // Salvar as contagens atualizadas
+    saveMessageCounts();
+  } else {
+    // Salvar as contagens atualizadas mesmo que não tenha atingido o limite
+    saveMessageCounts();
+  }
 }
 
 // Função para escolher uma mensagem aleatória
-function getRandomMessage() {
-  const index = Math.floor(Math.random() * messages.length);
-  return messages[index];
+function getRandomMessage(): string {
+  const randomMessages = [
+    "Miaaau! 😺",
+    "O gato preto ta de olho em você! 👀",
+    "Que tal um /meow? 🐾",
+    "Hora do /meow! 🎶",
+    "^idiotinha",
+  ];
+  const index = Math.floor(Math.random() * randomMessages.length);
+  return randomMessages[index];
+}
+
+// Função para carregar o arquivo JSON
+function loadMessageCounts() {
+  if (fs.existsSync(messageCountsPath)) {
+    try {
+      const data = fs.readFileSync(messageCountsPath, "utf-8");
+      messageCounts = JSON.parse(data);
+      console.log("Contagens de mensagens carregadas com sucesso.");
+    } catch (error) {
+      console.error("Erro ao carregar o arquivo JSON:", error);
+    }
+  } else {
+    console.log("Arquivo JSON não encontrado, criando um novo.");
+  }
+}
+
+// Função para salvar o arquivo JSON
+function saveMessageCounts() {
+  try {
+    fs.writeFileSync(messageCountsPath, JSON.stringify(messageCounts, null, 2));
+    console.log("Contagens de mensagens salvas com sucesso.");
+  } catch (error) {
+    console.error("Erro ao salvar o arquivo JSON:", error);
+  }
 }
