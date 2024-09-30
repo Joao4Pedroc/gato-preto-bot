@@ -10,13 +10,18 @@ import path from "path";
 import { config } from "dotenv";
 import { handleRandomGatoPreto } from "./handlers/handleRandomGatoPreto";
 import { handleMeow } from "./handlers/handleMeow";
+import { handleMessage } from "./handlers/handleMessage";
 
 config();
 
 console.log(generateDependencyReport());
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildMessages,
+  ],
   partials: [Partials.Channel],
 });
 
@@ -34,4 +39,8 @@ client.on("interactionCreate", async (interaction) => {
   } else if (interaction.commandName === "random-gato-preto") {
     await handleRandomGatoPreto(interaction);
   }
+});
+
+client.on("messageCreate", (message) => {
+  handleMessage(message);
 });
