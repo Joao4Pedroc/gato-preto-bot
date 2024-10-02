@@ -10,6 +10,22 @@ const commands = [
   new SlashCommandBuilder()
     .setName("random-gato-preto")
     .setDescription("O bot manda uma imagem aleatoria do gato preto"),
+  new SlashCommandBuilder()
+    .setName("remindme")
+    .setDescription("Set a reminder")
+    .addStringOption((option) =>
+      option
+        .setName("time")
+        .setDescription(
+          "The time to send the reminder (in seconds, minutes, or a timestamp)"
+        )
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("message")
+        .setDescription("The optional message to remind you of")
+    ),
 ].map((command) => command.toJSON());
 
 const rest = new REST({ version: "10" }).setToken(

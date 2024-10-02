@@ -11,6 +11,12 @@ import { config } from "dotenv";
 import { handleRandomGatoPreto } from "./handlers/handleRandomGatoPreto";
 import { handleMeow } from "./handlers/handleMeow";
 import { handleMessage } from "./handlers/handleMessage";
+import { channel } from "diagnostics_channel";
+import {
+  checkReminders,
+  handleRemindMe,
+  startReminderInterval,
+} from "./handlers/handleRemindMe";
 
 config();
 
@@ -30,6 +36,12 @@ client.login(`${process.env.DISCORD_TOKEN}`);
 
 client.on("ready", () => {
   console.log(`Bot conectado como ${client.user?.tag}`);
+
+  // Verificar e enviar lembretes ao iniciar
+  checkReminders(client);
+
+  // Iniciar o intervalo para verificar lembretes periodicamente
+  startReminderInterval(client);
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -45,4 +57,13 @@ client.on("interactionCreate", async (interaction) => {
 client.on("messageCreate", (message) => {
   console.log(message.content);
   handleMessage(message);
+});
+
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isChatInputCommand()) return;
+
+  if (interaction.commandName === "remindme") {
+    console.log("pop");
+    handleRemindMe(interaction);
+  }
 });

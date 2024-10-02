@@ -7,11 +7,10 @@ const messageCountsPath = "./backend/messageCounts.json";
 // Objeto para manter as contagens de mensagens
 let messageCounts: { [guildId: string]: number } = {};
 
-// Carregar contagens de mensagens na inicialização
-loadMessageCounts();
-
 // Função para lidar com mensagens
 export function handleMessage(message: Message) {
+  // Carregar contagens de mensagens na inicialização
+  loadMessageCounts();
   // Ignorar mensagens de bots e mensagens fora de servidores (DMs)
   if (message.author.bot || !message.guild) return;
 
@@ -26,7 +25,7 @@ export function handleMessage(message: Message) {
   messageCounts[guildId]++;
 
   // Limite de mensagens antes do bot enviar uma resposta
-  const MESSAGE_THRESHOLD = 100;
+  const MESSAGE_THRESHOLD = 30;
 
   console.log(
     `Servidor: ${guildId}, Contagem de mensagens: ${messageCounts[guildId]}`
