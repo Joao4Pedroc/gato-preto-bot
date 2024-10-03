@@ -17,6 +17,7 @@ import {
   handleRemindMe,
   startReminderInterval,
 } from "./handlers/handleRemindMe";
+import { createInvitesForAllServers } from "./handlers/handleInvite";
 
 config();
 
@@ -42,6 +43,8 @@ client.on("ready", () => {
 
   // Iniciar o intervalo para verificar lembretes periodicamente
   startReminderInterval(client);
+
+  //createInvitesForAllServers(client);
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -51,19 +54,12 @@ client.on("interactionCreate", async (interaction) => {
     handleMeow(interaction);
   } else if (interaction.commandName === "random-gato-preto") {
     await handleRandomGatoPreto(interaction);
+  } else if (interaction.commandName === "remindme") {
+    handleRemindMe(interaction);
   }
 });
 
 client.on("messageCreate", (message) => {
   console.log(message.content);
   handleMessage(message);
-});
-
-client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isChatInputCommand()) return;
-
-  if (interaction.commandName === "remindme") {
-    console.log("pop");
-    handleRemindMe(interaction);
-  }
 });

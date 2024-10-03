@@ -14,6 +14,7 @@ let meowIntervals: { [guildId: string]: NodeJS.Timeout } = {};
 let isFirstMeow: { [guildId: string]: boolean } = {};
 let voiceConnections: { [guildId: string]: VoiceConnection } = {};
 let audioPlayers: { [guildId: string]: AudioPlayer } = {};
+let previusMeow: string;
 
 export async function handleMeow(interaction: ChatInputCommandInteraction) {
   const guildId = interaction.guildId!;
@@ -108,6 +109,7 @@ function playMeow(guildId: string, player: AudioPlayer) {
     }
   }
 
+  previusMeow = audioFilePath;
   const resource = createAudioResource(audioFilePath, {
     inlineVolume: true,
   });
@@ -144,7 +146,7 @@ function getRandomMeowFilePath(): string | null {
   });
 
   // Remover 'meow-1.mp3' da lista, se quiser evitar repetir o primeiro miado
-  const filteredMeowFiles = meowFiles.filter((file) => file !== "meow-1.mp3");
+  const filteredMeowFiles = meowFiles.filter((file) => file !== previusMeow);
 
   if (filteredMeowFiles.length === 0) {
     console.error(
@@ -198,6 +200,8 @@ function playImmediateMeow(guildId: string) {
   const audioFilePath = getRandomMeowFilePath();
 
   if (!audioFilePath) return;
+
+  previusMeow = audioFilePath;
 
   const resource = createAudioResource(audioFilePath, {
     inlineVolume: true,
