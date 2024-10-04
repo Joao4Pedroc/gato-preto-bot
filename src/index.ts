@@ -19,7 +19,11 @@ import {
 } from "./handlers/handleRemindMe";
 import { createInvitesForAllServers } from "./handlers/handleInvite";
 import { handleMiawsagem } from "./handlers/handleMiawsagem";
-import { handleMiawsagemConfig } from "./handlers/handleMiawsagemConfig";
+import {
+  handleMiawsagemConfig,
+  loadSettings,
+} from "./handlers/handleMiawsagemConfig";
+import { cacheAllGuildMembers } from "./handlers/cacheMembers";
 
 config();
 
@@ -31,6 +35,7 @@ const client = new Client({
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
   ],
   partials: [Partials.Channel],
 });
@@ -47,6 +52,8 @@ client.on("ready", () => {
   startReminderInterval(client);
 
   //createInvitesForAllServers(client);
+
+  //cacheAllGuildMembers(client, "365252818870992898");
 });
 
 client.on("interactionCreate", async (interaction) => {
@@ -59,6 +66,8 @@ client.on("interactionCreate", async (interaction) => {
   } else if (interaction.commandName === "remindme") {
     handleRemindMe(interaction);
   } else if (interaction.commandName === "miawsagem-anônima") {
+    loadSettings();
+
     handleMiawsagem(interaction);
   } else if ((interaction.commandName = "configurar-miawsagem")) {
     handleMiawsagemConfig(interaction);

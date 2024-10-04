@@ -65,7 +65,8 @@ async function handleMiawsagem(interaction: CommandInteraction) {
 
       if (!guild) {
         await interaction.reply({
-          content: "Você não é o usuário padrão em nenhum servidor.",
+          content:
+            "Escolha o servidor em que a mensagem sera enviada na opção servidor. (Esse processo precisa ser feito apenas uma vez)",
           ephemeral: true,
         });
         return;
@@ -134,7 +135,7 @@ async function handleMiawsagem(interaction: CommandInteraction) {
       if (!destinatario) {
         await interaction.editReply({
           content:
-            'Usuário não encontrado. Por favor, verifique se o nome está correto ou forneça o ID do usuário.\n\nPara obter o ID do usuário:\n1. Ative o Modo de Desenvolvedor no Discord (Configurações > Avançado > Modo de Desenvolvedor).\n2. Vá até o perfil do usuário no servidor.\n3. Clique com o botão direito no nome do usuário e selecione "Copiar ID".\n4. Reenvie o comando usando o ID como destinatário.',
+            '\nUsuário não encontrado. Por favor, verifique se o nome está correto ou forneça o ID do usuário (Esse processo precisa ser feito apenas uma vez).\n\nPara obter o ID do usuário:\n1. Ative o Modo de Desenvolvedor no Discord (Configurações > Avançado > Modo de Desenvolvedor).\n2. Vá até o perfil do usuário no servidor.\n3. Clique com o botão direito no nome do usuário e selecione "Copiar ID".\n4. Reenvie o comando usando o ID como destinatário.',
         });
         return;
       }

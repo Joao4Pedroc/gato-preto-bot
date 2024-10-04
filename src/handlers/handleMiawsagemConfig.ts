@@ -28,8 +28,7 @@ export async function handleMiawsagemConfig(interaction: CommandInteraction) {
   setGuildChannel(interaction.guild.id, canal.id);
 
   await interaction.reply({
-    content:
-      "Canal configurado com sucesso! As mensagens anônimas serão enviadas no canal ${canal}.",
+    content: `Canal configurado com sucesso! As mensagens anônimas serão enviadas no canal ${canal}.`,
     ephemeral: true,
   });
 }
@@ -42,11 +41,11 @@ interface GuildSettings {
   };
 }
 
-const SETTINGS_FILE = path.join(__dirname, "../backend/config.json");
+const SETTINGS_FILE = path.join(__dirname, "../../backend/config.json");
 let guildSettings: GuildSettings = {};
 
 // Carrega as configurações do arquivo ao iniciar
-function loadSettings() {
+export function loadSettings() {
   if (fs.existsSync(SETTINGS_FILE)) {
     const data = fs.readFileSync(SETTINGS_FILE, "utf8");
     try {

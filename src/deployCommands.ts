@@ -51,10 +51,8 @@ const commands = [
     )
     .addStringOption((option) =>
       option
-        .setName("Server")
-        .setDescription(
-          "O servidor onde a mensagem sera enviada (apenas precisa colocar uma vez para setar o servidor padrão)"
-        )
+        .setName("servidor")
+        .setDescription("O servidor onde a mensagem sera enviada")
     ),
   new SlashCommandBuilder()
     .setName("configurar-miawsagem")
