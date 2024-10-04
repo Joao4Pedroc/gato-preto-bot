@@ -19,6 +19,7 @@ import {
 } from "./handlers/handleRemindMe";
 import { createInvitesForAllServers } from "./handlers/handleInvite";
 import { handleMiawsagem } from "./handlers/handleMiawsagem";
+import { handleMiawsagemConfig } from "./handlers/handleMiawsagemConfig";
 
 config();
 
@@ -59,6 +60,8 @@ client.on("interactionCreate", async (interaction) => {
     handleRemindMe(interaction);
   } else if (interaction.commandName === "miawsagem-anônima") {
     handleMiawsagem(interaction);
+  } else if ((interaction.commandName = "configurar-miawsagem")) {
+    handleMiawsagemConfig(interaction);
   }
 });
 

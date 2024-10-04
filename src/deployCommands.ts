@@ -1,4 +1,9 @@
-import { REST, Routes, SlashCommandBuilder } from "discord.js";
+import {
+  PermissionFlagsBits,
+  REST,
+  Routes,
+  SlashCommandBuilder,
+} from "discord.js";
 import { config } from "dotenv";
 
 config();
@@ -43,7 +48,26 @@ const commands = [
           "Nome de usuário global do destinatário (ex: gatopreto)"
         )
         .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("Server")
+        .setDescription(
+          "O servidor onde a mensagem sera enviada (apenas precisa colocar uma vez para setar o servidor padrão)"
+        )
     ),
+  new SlashCommandBuilder()
+    .setName("configurar-miawsagem")
+    .setDescription(
+      "Configura o canal onde as mensagens anônimas serão enviadas"
+    )
+    .addChannelOption((option) =>
+      option
+        .setName("canal")
+        .setDescription("O canal onde as mensagens anônimas serão enviadas")
+        .setRequired(true)
+    )
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild), // Apenas administradores podem usar
 ].map((command) => command.toJSON());
 
 const rest = new REST({ version: "10" }).setToken(
