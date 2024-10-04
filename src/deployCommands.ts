@@ -26,6 +26,24 @@ const commands = [
         .setName("message")
         .setDescription("The optional message to remind you of")
     ),
+  new SlashCommandBuilder()
+    .setName("miawsagem-anônima")
+    .setDescription("Envie uma mensagem anônima para uma pessoa")
+
+    .addStringOption((option) =>
+      option
+        .setName("mensagem")
+        .setDescription("A mensagem a ser enviada")
+        .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("destinatário")
+        .setDescription(
+          "Nome de usuário global do destinatário (ex: gatopreto)"
+        )
+        .setRequired(true)
+    ),
 ].map((command) => command.toJSON());
 
 const rest = new REST({ version: "10" }).setToken(

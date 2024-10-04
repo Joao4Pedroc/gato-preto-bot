@@ -18,6 +18,7 @@ import {
   startReminderInterval,
 } from "./handlers/handleRemindMe";
 import { createInvitesForAllServers } from "./handlers/handleInvite";
+import { handleMiawsagem } from "./handlers/handleMiawsagem";
 
 config();
 
@@ -56,6 +57,8 @@ client.on("interactionCreate", async (interaction) => {
     await handleRandomGatoPreto(interaction);
   } else if (interaction.commandName === "remindme") {
     handleRemindMe(interaction);
+  } else if (interaction.commandName === "miawsagem-anônima") {
+    handleMiawsagem(interaction);
   }
 });
 
