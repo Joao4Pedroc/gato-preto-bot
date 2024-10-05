@@ -11,7 +11,10 @@ config();
 const commands = [
   new SlashCommandBuilder()
     .setName("meow")
-    .setDescription("O bot entra na call e faz meow"),
+    .setDescription("O bot entra na call e faz meow")
+    .addStringOption((option) =>
+      option.setName("nothing").setDescription("nothing to see here")
+    ),
   new SlashCommandBuilder()
     .setName("random-gato-preto")
     .setDescription("O bot manda uma imagem aleatoria do gato preto"),

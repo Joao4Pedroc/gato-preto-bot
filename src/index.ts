@@ -24,6 +24,10 @@ import {
   loadSettings,
 } from "./handlers/handleMiawsagemConfig";
 import { cacheAllGuildMembers } from "./handlers/cacheMembers";
+import {
+  scheduleNextNotification,
+  sendNotification,
+} from "./handlers/handleMokoko";
 
 config();
 
@@ -50,6 +54,8 @@ client.on("ready", () => {
 
   // Iniciar o intervalo para verificar lembretes periodicamente
   startReminderInterval(client);
+
+  scheduleNextNotification(client);
 
   //createInvitesForAllServers(client);
 

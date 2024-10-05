@@ -17,6 +17,8 @@ let audioPlayers: { [guildId: string]: AudioPlayer } = {};
 let previusMeow: string;
 
 export async function handleMeow(interaction: ChatInputCommandInteraction) {
+  const nothing = interaction.options.getString("nothing");
+
   const guildId = interaction.guildId!;
   const voiceChannel = (interaction.member as any).voice
     .channel as VoiceChannel;
@@ -42,7 +44,7 @@ export async function handleMeow(interaction: ChatInputCommandInteraction) {
     if (voiceConnections[guildId]) {
       // O bot já está conectado no servidor
       // Toca um miado aleatório imediatamente e reinicia o timer
-      playImmediateMeow(guildId);
+      playImmediateMeow(guildId, nothing);
 
       await interaction.editReply("Meoow😺");
     } else {
@@ -108,7 +110,6 @@ function playMeow(guildId: string, player: AudioPlayer) {
       return;
     }
   }
-
   previusMeow = audioFilePath;
   const resource = createAudioResource(audioFilePath, {
     inlineVolume: true,
@@ -186,7 +187,7 @@ function monitorVoiceChannel(
 }
 
 // toca meow aleatorio e reseta o timmer
-function playImmediateMeow(guildId: string) {
+function playImmediateMeow(guildId: string, secret: string | null) {
   const player = audioPlayers[guildId];
 
   if (!player) return;
@@ -195,9 +196,13 @@ function playImmediateMeow(guildId: string) {
   if (meowIntervals[guildId]) {
     clearTimeout(meowIntervals[guildId]);
   }
-
-  // Toca um miado aleatório
-  const audioFilePath = getRandomMeowFilePath();
+  let audioFilePath;
+  // Toca um miado semi-aleatório
+  if (secret === "8") {
+    audioFilePath = path.join(process.cwd(), "public", "sound", "meow-8.mp3");
+  } else {
+    audioFilePath = getRandomMeowFilePath();
+  }
 
   if (!audioFilePath) return;
 

@@ -1,4 +1,3 @@
-// src/handleMiawsagem.ts
 import { CommandInteraction, Guild, TextChannel, User } from "discord.js";
 import {
   addDefaultUserForGuild,
@@ -30,8 +29,9 @@ async function handleMiawsagem(interaction: CommandInteraction) {
   const destinatarioInput = destinatarioOption.value as string;
 
   let destinatario: User | undefined;
+  console.log("vai se fudeeeeeeeeeee");
 
-  if (!interaction.guild) {
+  if (true) {
     // Está no privado (DM)
     // Obtém a opção 'servidor' (o nome do servidor)
     const servidorOption = interaction.options.get("servidor");
@@ -140,9 +140,9 @@ async function handleMiawsagem(interaction: CommandInteraction) {
         return;
       }
 
-      // Envia a mensagem no canal especificado, mencionando o destinatário
+      // Envia a mensagem no canal especificado, mencio nando o destinatário
       await channel.send({
-        content: `Uma miawsagem anônima foi enviada para <@${destinatario.id}>!🐱\n\n${mensagem}`,
+        content: `Uma miawsagem anônima foi enviada para <@${destinatario.id}>!🐱\n\n\`\`\`${mensagem}\`\`\``,
         allowedMentions: { users: [destinatario.id] },
       });
 
@@ -158,46 +158,6 @@ async function handleMiawsagem(interaction: CommandInteraction) {
     }
   } else {
     // Está em servidor
-    destinatario = destinatarioOption.user;
-
-    if (destinatario) {
-      try {
-        if (interaction.channel instanceof TextChannel) {
-          // Envia a mensagem anonimamente para o destinatário
-          await destinatario.send(
-            `Você recebeu uma miawsagem anônima: "${mensagem}"`
-          );
-
-          // Responde no canal atual, mencionando o destinatário
-          await interaction.channel.send({
-            content: `\n\nUma miawsagem anônima foi enviada para <@${destinatario.id}>!🐱\n\n${mensagem}`,
-            allowedMentions: { users: [destinatario.id] },
-          });
-
-          // Responde ao usuário de forma discreta que a mensagem foi enviada
-          await interaction.reply({
-            content: "Sua mensagem anônima foi enviada!🐱",
-            ephemeral: true,
-          });
-        } else {
-          await interaction.reply({
-            content: "Não posso mandar uma miawsagem nesse canal.",
-            ephemeral: true,
-          });
-        }
-      } catch (error) {
-        console.error(error);
-        await interaction.reply({
-          content: "Erro ao enviar a mensagem. Tente novamente.",
-          ephemeral: true,
-        });
-      }
-    } else {
-      await interaction.reply({
-        content: "Usuário não encontrado.",
-        ephemeral: true,
-      });
-    }
   }
 }
 

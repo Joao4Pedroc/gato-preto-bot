@@ -5,3 +5,4 @@ dist/
 /public/image
 /backend/messageCounts.json
 /backend/remindMe.json
+/backend/config.json
