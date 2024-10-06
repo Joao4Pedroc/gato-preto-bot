@@ -74,7 +74,7 @@ client.on("interactionCreate", async (interaction) => {
   } else if (interaction.commandName === "miawsagem-anônima") {
     loadSettings();
 
-    handleMiawsagem(interaction);
+    handleMiawsagem(interaction, client);
   } else if ((interaction.commandName = "configurar-miawsagem")) {
     handleMiawsagemConfig(interaction);
   }

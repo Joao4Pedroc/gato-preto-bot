@@ -6,6 +6,7 @@ import {
   AudioPlayer,
   AudioPlayerStatus,
   VoiceConnection,
+  DiscordGatewayAdapterCreator,
 } from "@discordjs/voice";
 import path from "path";
 import fs from "fs";
@@ -52,7 +53,8 @@ export async function handleMeow(interaction: ChatInputCommandInteraction) {
       const connection = joinVoiceChannel({
         channelId: voiceChannel.id,
         guildId: voiceChannel.guild.id,
-        adapterCreator: voiceChannel.guild.voiceAdapterCreator,
+        adapterCreator: voiceChannel.guild
+          .voiceAdapterCreator as unknown as DiscordGatewayAdapterCreator,
       });
 
       const player = createAudioPlayer();

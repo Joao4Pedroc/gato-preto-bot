@@ -1,3 +1,104 @@
+import { CommandInteraction, Client, TextChannel } from "discord.js";
+import * as fs from "fs";
+import * as path from "path";
+import { getGuildChannel } from "./handleMiawsagemConfig";
+
+interface GuildConfig {
+  [guildId: string]: {
+    guildId: string;
+    channelId: string;
+  };
+}
+
+export async function handleMiawsagem(
+  interaction: CommandInteraction,
+  client: Client
+) {
+  // Obtém a mensagem diretamente como string
+  const mensagem = interaction.options.get("mensagem")?.value as string;
+  const destinatarioOption = interaction.options.get("destinatário");
+  let destinatario;
+
+  if (destinatarioOption && destinatarioOption.user) {
+    destinatario = destinatarioOption.user;
+  } else {
+    await interaction.reply({
+      content: "Nenhum usuario foi fornecido",
+      ephemeral: true,
+    });
+  }
+
+  const guildId = interaction.guildId;
+  if (!guildId) {
+    await interaction.reply({
+      content: "Este comando só pode ser usado dentro de um servidor.",
+      ephemeral: true,
+    });
+    return;
+  }
+
+  const channelId = getGuildChannel(guildId);
+
+  if (!channelId) {
+    await interaction.reply({
+      content:
+        "Este servidor não está configurado para enviar mensagens anônimas.\n Configure utilizando /configurar-miawsagem canal:",
+      ephemeral: true,
+    });
+    return;
+  }
+
+  let channel;
+  try {
+    channel = await client.channels.fetch(channelId);
+    if (!channel || !(channel instanceof TextChannel)) {
+      await interaction.reply({
+        content: "Canal de mensagens inválido ou não encontrado.",
+        ephemeral: true,
+      });
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+    await interaction.reply({
+      content: "Não foi possível acessar o canal de mensagens.",
+      ephemeral: true,
+    });
+    return;
+  }
+
+  // Formatar a mensagem
+
+  if (!destinatario) {
+    await interaction.reply({
+      content: "Marca alguem mano",
+      ephemeral: true,
+    });
+
+    return;
+  }
+  let formattedMessage = `**🐱 Uma miawsagem anônima foi enviada para <@${destinatario.id}>!! 🐱** \n\n\`\`\`${mensagem}\`\`\``;
+
+  try {
+    await (channel as TextChannel).send(formattedMessage);
+    await interaction.reply({
+      content: "Sua mensagem anônima foi enviada com sucesso!",
+      ephemeral: true,
+    });
+  } catch (error) {
+    console.error(error);
+    await interaction.reply({
+      content: "Ocorreu um erro ao enviar sua mensagem anônima.",
+      ephemeral: true,
+    });
+  }
+}
+
+/*
+
+ ////////////////////////// LOGICA ANTIGA DO HANDLEMIAWSAGEM //////////////////////////
+
+
 import { CommandInteraction, Guild, TextChannel, User } from "discord.js";
 import {
   addDefaultUserForGuild,
@@ -162,3 +263,4 @@ async function handleMiawsagem(interaction: CommandInteraction) {
 }
 
 export { handleMiawsagem };
+*/

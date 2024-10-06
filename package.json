@@ -22,6 +22,9 @@
     "opusscript": "^0.0.8",
     "typescript": "^5.6.2"
   },
+  "resolutions": {
+    "discord-api-types": "^0.36.0"
+  },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "ts-node": "^10.9.2",

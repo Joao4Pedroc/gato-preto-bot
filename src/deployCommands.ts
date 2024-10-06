@@ -37,25 +37,17 @@ const commands = [
   new SlashCommandBuilder()
     .setName("miawsagem-anônima")
     .setDescription("Envie uma mensagem anônima para uma pessoa")
-
     .addStringOption((option) =>
       option
         .setName("mensagem")
         .setDescription("A mensagem a ser enviada")
         .setRequired(true)
     )
-    .addStringOption((option) =>
+    .addUserOption((option) =>
       option
         .setName("destinatário")
-        .setDescription(
-          "Nome de usuário global do destinatário (ex: gatopreto)"
-        )
+        .setDescription("Usuario para qual a mensagem sera enviada")
         .setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName("servidor")
-        .setDescription("O servidor onde a mensagem sera enviada")
     ),
   new SlashCommandBuilder()
     .setName("configurar-miawsagem")
@@ -88,3 +80,27 @@ const rest = new REST({ version: "10" }).setToken(
     console.error(error);
   }
 })();
+
+// new SlashCommandBuilder()
+//   .setName("miawsagem-anônima")
+//   .setDescription("Envie uma mensagem anônima para uma pessoa")
+
+//   .addStringOption((option) =>
+//     option
+//       .setName("mensagem")
+//       .setDescription("A mensagem a ser enviada")
+//       .setRequired(true)
+//   )
+//   .addStringOption((option) =>
+//     option
+//       .setName("destinatário")
+//       .setDescription(
+//         "Nome de usuário global do destinatário (ex: gatopreto)"
+//       )
+//       .setRequired(true)
+//   )
+//   .addStringOption((option) =>
+//     option
+//       .setName("servidor")
+//       .setDescription("O servidor onde a mensagem sera enviada")
+//   ),

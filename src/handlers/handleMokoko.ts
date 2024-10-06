@@ -15,12 +15,12 @@ function getNextNotificationTime(): Date {
     const minutes = next.getMinutes();
 
     // Verifica se a hora é ímpar
-    const isOddHour = hours % 2 !== 0;
+    const isEvenHour = hours % 2 === 0;
 
     // Verifica se os minutos são 30 ou 50
     const isValidMinute = minutes === 30 || minutes === 50;
 
-    if (isOddHour && isValidMinute) {
+    if (isEvenHour && isValidMinute) {
       return next;
     }
 
