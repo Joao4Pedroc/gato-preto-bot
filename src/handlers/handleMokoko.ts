@@ -1,5 +1,7 @@
 import { Client, TextChannel } from "discord.js";
 
+//melhorar mokoko
+
 const channelId = "1082357488013283390";
 function getNextNotificationTime(): Date {
   const now = new Date();
@@ -18,7 +20,7 @@ function getNextNotificationTime(): Date {
     const isEvenHour = hours % 2 === 0;
 
     // Verifica se os minutos são 30 ou 50
-    const isValidMinute = minutes === 30 || minutes === 50;
+    const isValidMinute = minutes === 50;
 
     if (isEvenHour && isValidMinute) {
       return next;

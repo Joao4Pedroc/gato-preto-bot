@@ -48,6 +48,13 @@ const commands = [
         .setName("destinatário")
         .setDescription("Usuario para qual a mensagem sera enviada")
         .setRequired(true)
+    )
+    .addAttachmentOption(
+      (option) =>
+        option
+          .setName("arquivo")
+          .setDescription("Envie uma imagem ou GIF (opcional)")
+          .setRequired(false) // É opcional
     ),
   new SlashCommandBuilder()
     .setName("configurar-miawsagem")

@@ -17,6 +17,8 @@ export async function handleMiawsagem(
   // Obtém a mensagem diretamente como string
   const mensagem = interaction.options.get("mensagem")?.value as string;
   const destinatarioOption = interaction.options.get("destinatário");
+  const arquivo = interaction.options.get("arquivo")?.attachment;
+
   let destinatario;
 
   if (destinatarioOption && destinatarioOption.user) {
@@ -77,10 +79,32 @@ export async function handleMiawsagem(
 
     return;
   }
+
+  const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+  if (arquivo) {
+    const contentType = arquivo.contentType; // Obtém o Content-Type do anexo
+
+    // Verifica se o tipo de conteúdo está na lista permitida
+    if (!contentType || !allowedTypes.includes(contentType)) {
+      await interaction.reply({
+        content: "Apenas arquivos de imagem (JPEG, PNG, GIF) são permitidos.",
+        ephemeral: true,
+      });
+      return;
+    }
+  }
+
   let formattedMessage = `**🐱 Uma miawsagem anônima foi enviada para <@${destinatario.id}>!! 🐱** \n\n\`\`\`${mensagem}\`\`\``;
 
   try {
-    await (channel as TextChannel).send(formattedMessage);
+    if (arquivo) {
+      await (channel as TextChannel).send({
+        content: formattedMessage,
+        files: [arquivo.url],
+      });
+    } else {
+      await (channel as TextChannel).send(formattedMessage);
+    }
     await interaction.reply({
       content: "Sua mensagem anônima foi enviada com sucesso!",
       ephemeral: true,

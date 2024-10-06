@@ -55,7 +55,7 @@ client.on("ready", () => {
   // Iniciar o intervalo para verificar lembretes periodicamente
   startReminderInterval(client);
 
-  scheduleNextNotification(client);
+  //scheduleNextNotification(client);
 
   //createInvitesForAllServers(client);
 
