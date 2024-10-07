@@ -50,6 +50,9 @@ export function handleMessage(message: Message) {
 }
 
 // Função para escolher uma mensagem aleatória
+
+//"黑猫幸运之神",
+//"黑猫之神",
 function getRandomMessage(): string {
   if (Math.random() * 100 < 1) {
     return "幸运黑猫之神要求所有 Kuromi 女孩向@ximbriba 发送消息\n\n如果你认识的话，介绍给Ximbriba吧，这是黑猫财神的请求";
@@ -60,6 +63,7 @@ function getRandomMessage(): string {
     "Que tal um /meow? 🐾",
     "Hora do /meow! 🎶",
     "^idiotinha",
+    "招财黑猫的招财神",
   ];
   const index = Math.floor(Math.random() * randomMessages.length);
   return randomMessages[index];
