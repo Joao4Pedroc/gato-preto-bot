@@ -40,7 +40,7 @@ export async function sendNotification(client: Client): Promise<void> {
       return;
     }
 
-    const message = `📢 **Notificação de Evenyato!** 📢\n\n📅 *Próximiaw evenyato miaukoko em breve!* 🐱 Não perca! \n\n <@304818183712407552> <@213818871478616064> <@200359704826740736>`;
+    const message = `📢 **Notificação de Evenyato!** 📢\n\n📅 *Próximiaw evenyato miaukoko em breve!* 🐱 Não perca! \n\n <@userId> <@userId> <@userId>`;
 
     await channel.send(message);
     console.log(`Notificação enviada em ${new Date().toLocaleString()}`);

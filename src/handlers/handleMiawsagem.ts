@@ -1,14 +1,5 @@
 import { CommandInteraction, Client, TextChannel } from "discord.js";
-import * as fs from "fs";
-import * as path from "path";
 import { getGuildChannel } from "./handleMiawsagemConfig";
-
-interface GuildConfig {
-  [guildId: string]: {
-    guildId: string;
-    channelId: string;
-  };
-}
 
 export async function handleMiawsagem(
   interaction: CommandInteraction,

@@ -1,33 +1,19 @@
 import { Client, GatewayIntentBits, Partials } from "discord.js";
-import {
-  joinVoiceChannel,
-  createAudioPlayer,
-  createAudioResource,
-  AudioPlayerStatus,
-  generateDependencyReport,
-} from "@discordjs/voice";
-import path from "path";
+import { generateDependencyReport } from "@discordjs/voice";
 import { config } from "dotenv";
 import { handleRandomGatoPreto } from "./handlers/handleRandomGatoPreto";
 import { handleMeow } from "./handlers/handleMeow";
 import { handleMessage } from "./handlers/handleMessage";
-import { channel } from "diagnostics_channel";
 import {
   checkReminders,
   handleRemindMe,
   startReminderInterval,
 } from "./handlers/handleRemindMe";
-import { createInvitesForAllServers } from "./handlers/handleInvite";
 import { handleMiawsagem } from "./handlers/handleMiawsagem";
 import {
   handleMiawsagemConfig,
   loadSettings,
 } from "./handlers/handleMiawsagemConfig";
-import { cacheAllGuildMembers } from "./handlers/cacheMembers";
-import {
-  scheduleNextNotification,
-  sendNotification,
-} from "./handlers/handleMokoko";
 
 config();
 

@@ -4,7 +4,6 @@ import {
   createAudioPlayer,
   createAudioResource,
   AudioPlayer,
-  AudioPlayerStatus,
   VoiceConnection,
   DiscordGatewayAdapterCreator,
 } from "@discordjs/voice";
