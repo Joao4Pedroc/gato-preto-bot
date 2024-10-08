@@ -41,8 +41,12 @@ export async function handleRemindMe(
   });
 
   fs.writeFileSync(remindMePath, JSON.stringify(reminders, null, 2));
+  // Converte o tempo em segundos para o timestamp do Discord
+  const discordTimestamp = `<t:${Math.floor(remindAt.getTime() / 1000)}:F>`;
 
-  await interaction.reply(`Miaaw, vou te mandar mensagem em ${time}.`);
+  await interaction.reply(
+    `Miaaw, vou te mandar mensagem em ${time}\n\n\n${discordTimestamp}.`
+  );
 }
 
 // Function to check reminders and send them if it's time
@@ -99,6 +103,9 @@ function calculateRemindTime(time: string): Date | null {
   } else if (time.endsWith("h")) {
     const hours = parseInt(time.slice(0, -1));
     now.setHours(now.getHours() + hours);
+  } else if (time.endsWith("d")) {
+    const days = parseInt(time.slice(0, -1));
+    now.setHours(now.getHours() + days * 24);
   } else {
     const timestamp = Date.parse(time);
     if (!isNaN(timestamp)) {
