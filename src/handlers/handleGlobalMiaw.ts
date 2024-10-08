@@ -1,4 +1,4 @@
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, TextChannel } from "discord.js";
 import fs from "fs";
 import path from "path";
 
@@ -57,10 +57,22 @@ function saveServerMeowCounts() {
   fs.writeFileSync(dataFilePath, JSON.stringify(serverMeowCounts, null, 2));
 }
 
-export function icrementServerMeowCount(guildId: string) {
+export function icrementServerMeowCount(
+  guildId: string,
+  interaction: CommandInteraction
+) {
   if (!serverMeowCounts[guildId]) {
     serverMeowCounts[guildId] = 0;
   }
   serverMeowCounts[guildId] += 1;
+
+  if (
+    serverMeowCounts[guildId] % 50 === 0 &&
+    interaction.channel instanceof TextChannel
+  ) {
+    interaction.channel.send(
+      `🎉 Parabéns! O servidor atingiu ${serverMeowCounts[guildId]} miados! 🐱`
+    );
+  }
   saveServerMeowCounts();
 }

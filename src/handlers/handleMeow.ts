@@ -45,7 +45,7 @@ export async function handleMeow(interaction: ChatInputCommandInteraction) {
     if (voiceConnections[guildId]) {
       // O bot já está conectado no servidor
       // Toca um miado aleatório imediatamente e reinicia o timer
-      playImmediateMeow(guildId, nothing);
+      playImmediateMeow(guildId, nothing, interaction);
 
       await interaction.editReply("Meoow😺");
     } else {
@@ -66,7 +66,7 @@ export async function handleMeow(interaction: ChatInputCommandInteraction) {
       audioPlayers[guildId] = player;
 
       // Inicia o processo de tocar o som periodicamente
-      startMeowing(guildId, player, connection, voiceChannel);
+      startMeowing(guildId, player, connection, voiceChannel, interaction);
 
       await interaction.editReply("O gato entrou na call! 😺");
     }
@@ -82,7 +82,8 @@ function startMeowing(
   guildId: string,
   player: AudioPlayer,
   connection: VoiceConnection,
-  voiceChannel: VoiceChannel
+  voiceChannel: VoiceChannel,
+  interaction: ChatInputCommandInteraction
 ) {
   // Se já existe um intervalo para este servidor, não cria outro
   if (meowIntervals[guildId]) return;
@@ -91,13 +92,17 @@ function startMeowing(
   isFirstMeow[guildId] = true;
 
   // Toca o primeiro miado imediatamente
-  playMeow(guildId, player);
+  playMeow(guildId, player, interaction);
 
   // Monitorar o canal de voz para sair quando não houver mais usuários
   monitorVoiceChannel(connection, guildId, voiceChannel);
 }
 
-function playMeow(guildId: string, player: AudioPlayer) {
+function playMeow(
+  guildId: string,
+  player: AudioPlayer,
+  interaction: ChatInputCommandInteraction
+) {
   let audioFilePath: string | null;
 
   if (isFirstMeow[guildId]) {
@@ -118,13 +123,17 @@ function playMeow(guildId: string, player: AudioPlayer) {
   });
   resource.volume?.setVolume(0.5); // toca a 50% do volume
   player.play(resource);
-  icrementServerMeowCount(guildId);
+  icrementServerMeowCount(guildId, interaction);
 
   // Agendar o próximo miado
-  scheduleNextMeow(guildId, player);
+  scheduleNextMeow(guildId, player, interaction);
 }
 
-function scheduleNextMeow(guildId: string, player: AudioPlayer) {
+function scheduleNextMeow(
+  guildId: string,
+  player: AudioPlayer,
+  interaction: ChatInputCommandInteraction
+) {
   // Definir o próximo intervalo
   const minIntervalSec = 60; // segundos
   const maxIntervalSec = 300; // segundos
@@ -135,7 +144,7 @@ function scheduleNextMeow(guildId: string, player: AudioPlayer) {
     ) * 1000;
 
   meowIntervals[guildId] = setTimeout(() => {
-    playMeow(guildId, player);
+    playMeow(guildId, player, interaction);
   }, nextInterval);
 }
 
@@ -190,7 +199,11 @@ function monitorVoiceChannel(
 }
 
 // toca meow aleatorio e reseta o timmer
-function playImmediateMeow(guildId: string, secret: string | null) {
+function playImmediateMeow(
+  guildId: string,
+  secret: string | null,
+  interaction: ChatInputCommandInteraction
+) {
   const player = audioPlayers[guildId];
 
   if (!player) return;
@@ -218,5 +231,5 @@ function playImmediateMeow(guildId: string, secret: string | null) {
   player.play(resource);
 
   // Reinicia o timer
-  scheduleNextMeow(guildId, player);
+  scheduleNextMeow(guildId, player, interaction);
 }
