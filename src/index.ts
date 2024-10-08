@@ -14,6 +14,7 @@ import {
   handleMiawsagemConfig,
   loadSettings,
 } from "./handlers/handleMiawsagemConfig";
+import { handleGlobalMeow } from "./handlers/handleGlobalMiaw";
 
 config();
 
@@ -63,6 +64,8 @@ client.on("interactionCreate", async (interaction) => {
     handleMiawsagem(interaction, client);
   } else if ((interaction.commandName = "configurar-miawsagem")) {
     handleMiawsagemConfig(interaction);
+  } else if ((interaction.commandName = "globalMeow")) {
+    handleGlobalMeow(interaction);
   }
 });
 

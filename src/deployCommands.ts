@@ -68,6 +68,9 @@ const commands = [
         .setRequired(true)
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild), // Apenas administradores podem usar
+  new SlashCommandBuilder()
+    .setName("globalMeaw")
+    .setDescription("O DUELO DE SERVIDORES QUE MAIS MIARAM"),
 ].map((command) => command.toJSON());
 
 const rest = new REST({ version: "10" }).setToken(
