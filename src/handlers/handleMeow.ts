@@ -9,6 +9,7 @@ import {
 } from "@discordjs/voice";
 import path from "path";
 import fs from "fs";
+import { icrementServerMeowCount } from "./handleGlobalMiaw";
 
 let meowIntervals: { [guildId: string]: NodeJS.Timeout } = {};
 let isFirstMeow: { [guildId: string]: boolean } = {};
@@ -117,6 +118,7 @@ function playMeow(guildId: string, player: AudioPlayer) {
   });
   resource.volume?.setVolume(0.5); // toca a 50% do volume
   player.play(resource);
+  icrementServerMeowCount(guildId);
 
   // Agendar o próximo miado
   scheduleNextMeow(guildId, player);
