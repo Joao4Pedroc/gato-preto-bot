@@ -54,7 +54,7 @@ export function handleMessage(message: Message) {
 //"黑猫幸运之神",
 //"黑猫之神",
 function getRandomMessage(): string {
-  if (Math.random() * 100 < 1) {
+  if (Math.random() * 1000 < 1) {
     return "幸运黑猫之神要求所有 Kuromi 女孩向@ximbriba 发送消息\n\n如果你认识的话，介绍给Ximbriba吧，这是黑猫财神的请求";
   }
   const randomMessages = [
