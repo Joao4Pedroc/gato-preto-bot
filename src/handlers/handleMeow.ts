@@ -1,4 +1,9 @@
-import { ChatInputCommandInteraction, VoiceChannel } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  Client,
+  TextChannel,
+  VoiceChannel,
+} from "discord.js";
 import {
   joinVoiceChannel,
   createAudioPlayer,
@@ -6,10 +11,19 @@ import {
   AudioPlayer,
   VoiceConnection,
   DiscordGatewayAdapterCreator,
+  getVoiceConnection,
+  VoiceConnectionStatus,
 } from "@discordjs/voice";
 import path from "path";
 import fs from "fs";
 import { icrementServerMeowCount } from "./handleGlobalMiaw";
+import {
+  eventoComum,
+  eventoEpico,
+  eventoLendario,
+  eventoRaro,
+  getRandomEvent,
+} from "../cat game/Helpers/meawEvent";
 
 let meowIntervals: { [guildId: string]: NodeJS.Timeout } = {};
 let isFirstMeow: { [guildId: string]: boolean } = {};
@@ -17,7 +31,10 @@ let voiceConnections: { [guildId: string]: VoiceConnection } = {};
 let audioPlayers: { [guildId: string]: AudioPlayer } = {};
 let previusMeow: string;
 
-export async function handleMeow(interaction: ChatInputCommandInteraction) {
+export async function handleMeow(
+  interaction: ChatInputCommandInteraction,
+  client: Client
+) {
   const nothing = interaction.options.getString("nothing");
 
   const guildId = interaction.guildId!;
@@ -45,7 +62,7 @@ export async function handleMeow(interaction: ChatInputCommandInteraction) {
     if (voiceConnections[guildId]) {
       // O bot já está conectado no servidor
       // Toca um miado aleatório imediatamente e reinicia o timer
-      playImmediateMeow(guildId, nothing, interaction);
+      playImmediateMeow(guildId, nothing, interaction, client);
 
       await interaction.editReply("Meoow😺");
     } else {
@@ -66,7 +83,14 @@ export async function handleMeow(interaction: ChatInputCommandInteraction) {
       audioPlayers[guildId] = player;
 
       // Inicia o processo de tocar o som periodicamente
-      startMeowing(guildId, player, connection, voiceChannel, interaction);
+      startMeowing(
+        guildId,
+        player,
+        connection,
+        voiceChannel,
+        interaction,
+        client
+      );
 
       await interaction.editReply("O gato entrou na call! 😺");
     }
@@ -83,7 +107,8 @@ function startMeowing(
   player: AudioPlayer,
   connection: VoiceConnection,
   voiceChannel: VoiceChannel,
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
+  client: Client
 ) {
   // Se já existe um intervalo para este servidor, não cria outro
   if (meowIntervals[guildId]) return;
@@ -92,26 +117,31 @@ function startMeowing(
   isFirstMeow[guildId] = true;
 
   // Toca o primeiro miado imediatamente
-  playMeow(guildId, player, interaction);
+  playMeow(guildId, player, interaction, client);
 
   // Monitorar o canal de voz para sair quando não houver mais usuários
   monitorVoiceChannel(connection, guildId, voiceChannel);
 }
 
-function playMeow(
+async function playMeow(
   guildId: string,
   player: AudioPlayer,
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
+  client: Client
 ) {
   let audioFilePath: string | null;
+  let event;
 
   if (isFirstMeow[guildId]) {
     // Toca o meow-1.mp3 no primeiro miado
     audioFilePath = path.join(process.cwd(), "public", "sound", "meow-1.mp3");
     isFirstMeow[guildId] = false; // Atualiza para indicar que o primeiro miado já ocorreu
   } else {
+    event = getRandomEvent();
     // Toca um miado aleatório
     audioFilePath = getRandomMeowFilePath();
+    icrementServerMeowCount(guildId, interaction);
+
     if (!audioFilePath) {
       console.log("audio file path null");
       return;
@@ -123,16 +153,43 @@ function playMeow(
   });
   resource.volume?.setVolume(0.5); // toca a 50% do volume
   player.play(resource);
-  icrementServerMeowCount(guildId, interaction);
+
+  const channel = getCurrentVoiceChannel(guildId, client);
+
+  if (!channel) {
+    return;
+  }
+
+  const membersInVoice = [
+    ...channel.members.filter((member) => !member.user.bot).values(),
+  ];
+
+  switch (event) {
+    case "common":
+      await eventoComum(interaction, membersInVoice);
+      break;
+    case "rare":
+      await eventoRaro(interaction, membersInVoice);
+      break;
+    case "epic":
+      await eventoEpico(interaction, membersInVoice);
+      break;
+    case "legendary":
+      await eventoLendario(interaction, membersInVoice);
+      break;
+    default:
+      break;
+  }
 
   // Agendar o próximo miado
-  scheduleNextMeow(guildId, player, interaction);
+  scheduleNextMeow(guildId, player, interaction, client);
 }
 
 function scheduleNextMeow(
   guildId: string,
   player: AudioPlayer,
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
+  client: Client
 ) {
   // Definir o próximo intervalo
   const minIntervalSec = 60; // segundos
@@ -144,7 +201,7 @@ function scheduleNextMeow(
     ) * 1000;
 
   meowIntervals[guildId] = setTimeout(() => {
-    playMeow(guildId, player, interaction);
+    playMeow(guildId, player, interaction, client);
   }, nextInterval);
 }
 
@@ -202,7 +259,8 @@ function monitorVoiceChannel(
 function playImmediateMeow(
   guildId: string,
   secret: string | null,
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
+  client: Client
 ) {
   const player = audioPlayers[guildId];
 
@@ -231,5 +289,49 @@ function playImmediateMeow(
   player.play(resource);
 
   // Reinicia o timer
-  scheduleNextMeow(guildId, player, interaction);
+  scheduleNextMeow(guildId, player, interaction, client);
+}
+
+function getCurrentVoiceChannel(
+  guildId: string,
+  client: Client
+): VoiceChannel | null {
+  const connection: VoiceConnection | undefined = getVoiceConnection(guildId);
+
+  if (!connection) {
+    console.log(
+      `O bot não está conectado a nenhum canal de voz no servidor com ID ${guildId}.`
+    );
+    return null;
+  }
+
+  // Verifica se a conexão está ativa
+  if (connection.state.status !== VoiceConnectionStatus.Ready) {
+    console.log(`A conexão de voz no servidor ${guildId} não está pronta.`);
+    return null;
+  }
+
+  // Obtém o channelId a partir da conexão
+  const channelId = connection.joinConfig.channelId;
+
+  if (!channelId) {
+    console.log(`Canal de voz não encontrado na configuração da conexão.`);
+    return null;
+  }
+
+  const guild = client.guilds.cache.get(guildId);
+
+  if (!guild) {
+    console.log(`Servidor com ID ${guildId} não encontrado.`);
+    return null;
+  }
+
+  const channel = guild.channels.cache.get(channelId);
+
+  if (!channel || !channel.isVoiceBased()) {
+    console.log(`Canal com ID ${channelId} não é um canal de voz válido.`);
+    return null;
+  }
+
+  return channel as VoiceChannel;
 }

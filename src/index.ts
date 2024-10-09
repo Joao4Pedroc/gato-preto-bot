@@ -71,7 +71,7 @@ client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === "meow") {
-    handleMeow(interaction);
+    handleMeow(interaction, client);
   } else if (interaction.commandName === "random-gato-preto") {
     await handleRandomGatoPreto(interaction);
   } else if (interaction.commandName === "remindme") {
