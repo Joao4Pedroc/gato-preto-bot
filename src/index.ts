@@ -49,6 +49,24 @@ client.on("ready", () => {
   //cacheAllGuildMembers(client, "365252818870992898");
 });
 
+/* 
+
+    /meta { nome_da_meta: string, numeros_de_usuarios: number, numero_total_arrecadar: number }
+
+    reply meta_por_usuarios { todos_usuarios: @ @ @ @ @ @ @, data_final: Date }
+
+    reply confirmar? {react confirmar✅  cancelar❌ 
+
+    -------------------------------------
+
+    a mensagem vai ficar salva em um canal de avisos, apenas podendo ser vista pelos participantes, sera 1 mensagem geral, e 1 para cada participante
+
+    quando um participante der react de done✅, os outros participantes vao receber notificação para confirmar que foi realmente feito 
+
+    depois disso sera contabilizado na mensagem principal
+
+*/
+
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 

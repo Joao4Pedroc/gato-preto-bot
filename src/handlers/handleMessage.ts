@@ -64,6 +64,8 @@ function getRandomMessage(): string {
     "Hora do /meow! 🎶",
     "^idiotinha",
     "招财黑猫的招财神",
+    "https://discord.com/channels/966244956115173377/966244956677214220/1293619725674217533",
+    "https://cdn.discordapp.com/attachments/966244956677214220/1293620308036550806/e5f6dd36-6e14-4358-82bc-447862fadc38.png?ex=6708094b&is=6706b7cb&hm=680a9f19bb4583d6dcb00c86595e75170e12d38ddc0b75695a52c96b78e78d24&",
   ];
   const index = Math.floor(Math.random() * randomMessages.length);
   return randomMessages[index];
