@@ -39,10 +39,10 @@ export async function eventoEpico(
   interaction: CommandInteraction,
   participants: GuildMember[]
 ) {
-  const spawnedCat = generateRandomCat(); // Função para gerar um gato aleatório
+  const spawnedCat = generateCat(); // Função para gerar um gato aleatório
 
   // Armazenar o gato disponível para captura, associando aos participantes
-  // Você pode usar um Map ou armazenar no banco de dados
+  // talvez usar um Map ou armazenar no banco de dados
 
   await interaction.followUp(
     "Um gato selvagem apareceu! Use `/capturar` para tentar capturá-lo!"
@@ -53,7 +53,7 @@ export async function eventoLendario(
   interaction: CommandInteraction,
   participants: GuildMember[]
 ) {
-  const eventCat = generateEventCat(); // Função para gerar um gato de evento
+  const eventCat = generateCat(); // Função para gerar um gato de evento
 
   // Adicionar o gato diretamente ao inventário dos participantes
   for (const member of participants) {
